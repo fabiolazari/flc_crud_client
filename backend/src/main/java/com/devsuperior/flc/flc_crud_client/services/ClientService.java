@@ -7,12 +7,15 @@ import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.devsuperior.flc.flc_crud_client.dto.ClientDTO;
 import com.devsuperior.flc.flc_crud_client.entities.Client;
 import com.devsuperior.flc.flc_crud_client.repositories.ClientRepository;
+import com.devsuperior.flc.flc_crud_client.services.exceptions.DatabaseException;
 import com.devsuperior.flc.flc_crud_client.services.exceptions.ResourceNotFoundException;
 
 @Service
@@ -53,6 +56,19 @@ public class ClientService {
 		catch (EntityNotFoundException e) {
 			throw new ResourceNotFoundException("Id não encontrado " + id);
 		}	
+	}
+	
+	public void delete(Long id) {
+		try {
+			repository.deleteById(id);
+		}
+		catch (EmptyResultDataAccessException e) {
+			throw new ResourceNotFoundException("Id não encontrado " + id);
+		}
+		catch (DataIntegrityViolationException e) {
+			throw new DatabaseException("Violação de integridade");
+		}
+		
 	}
 	
 	private void copyDtoToEntity(ClientDTO dto, Client entity) {
