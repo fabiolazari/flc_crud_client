@@ -68,7 +68,6 @@ public class ClientService {
 		catch (DataIntegrityViolationException e) {
 			throw new DatabaseException("Violação de integridade");
 		}
-		
 	}
 	
 	private void copyDtoToEntity(ClientDTO dto, Client entity) {
